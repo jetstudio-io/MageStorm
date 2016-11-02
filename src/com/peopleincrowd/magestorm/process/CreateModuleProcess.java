@@ -110,9 +110,15 @@ public class CreateModuleProcess {
         if ("".equals(this.projectDir)) {
             throw new FileNotFoundException("Project directory not found");
         }
+        //Prepare some variables
         this.moduleName = this.company + "_" + this.module;
         this.moduleNameLower = this.moduleName.toLowerCase();
         this.moduleDir = String.format(this.PATH_TEMP, this.projectDir, this.codePool, this.company, this.module);
+
+        // Create config folder
+        this._createFolders("etc");
+        this._createConfigFile();
+
         this._createConfig();
         this._writeConfigFile();
     }
@@ -132,11 +138,6 @@ public class CreateModuleProcess {
             moduleElement.appendChild(versionElement);
             this.configElement.appendChild(moduleElement);
 
-            // Create config folder
-            this._createFolders("etc");
-
-            this._createConfigFile();
-
             if (this.hasBlock) {
                 this._createConfigNode("block");
                 this._createFolders("Block");
@@ -153,21 +154,7 @@ public class CreateModuleProcess {
             }
 
             if (this.hasSetup) {
-                String xpath = "resources/" + this.moduleNameLower + "_setup/setup/module";
-                this._createNode(xpath, this.moduleName);
-                xpath = "resources/" + this.moduleNameLower + "_setup/connection/use";
-                this._createNode(xpath, "core_setup");
-
-                String subDir = "sql/" + this.moduleNameLower + "_setup";
-                this._createFolders(subDir);
-
-                File sourceFile = this._getResourceFile("templates/mysql4-install-0.0.1.php");
-                File destDir = new File(this.moduleDir + "/" + subDir);
-                try {
-                    FileUtils.copyFileToDirectory(sourceFile, destDir);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                this._createSetup();
             }
 
             this.configElement.appendChild(this.globalElement);
@@ -194,6 +181,25 @@ public class CreateModuleProcess {
             fos.write(fileContent.getBytes());
             fos.flush();
             fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void _createSetup() {
+        String xpath = "resources/" + this.moduleNameLower + "_setup/setup/module";
+        this._createNode(xpath, this.moduleName);
+
+        xpath = "resources/" + this.moduleNameLower + "_setup/connection/use";
+        this._createNode(xpath, "core_setup");
+
+        String subDir = "sql/" + this.moduleNameLower + "_setup";
+        this._createFolders(subDir);
+
+        File sourceFile = this._getResourceFile("templates/mysql4-install-0.0.1.php");
+        File destDir = new File(this.moduleDir + "/" + subDir);
+        try {
+            FileUtils.copyFileToDirectory(sourceFile, destDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
