@@ -1,5 +1,6 @@
 package com.peopleincrowd.magestorm.process;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -13,6 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
@@ -22,6 +24,7 @@ import java.util.regex.Pattern;
 public class CreateModuleProcess {
     final String PATH_TEMP;
     final String CONFIG_PATH;
+    final String MODULE_CONFIG_PATH;
 
     protected String codePool = "local";
     protected String projectDir = "";
@@ -39,9 +42,14 @@ public class CreateModuleProcess {
     protected Element configElement;
     protected Element globalElement;
 
+    protected ClassLoader classLoader;
+
     public CreateModuleProcess() {
         this.PATH_TEMP = "%s/app/code/%s/%s/%s";
         this.CONFIG_PATH = "etc/config.xml";
+        this.MODULE_CONFIG_PATH = "%s/app/etc/modules/%s_%s.xml";
+
+        this.classLoader = this.getClass().getClassLoader();
     }
 
     public void setCompany(String company) {
@@ -127,6 +135,8 @@ public class CreateModuleProcess {
             // Create config folder
             this._createFolders("etc");
 
+            this._createConfigFile();
+
             if (this.hasBlock) {
                 this._createConfigNode("block");
                 this._createFolders("Block");
@@ -150,6 +160,14 @@ public class CreateModuleProcess {
 
                 String subDir = "sql/" + this.moduleNameLower + "_setup";
                 this._createFolders(subDir);
+
+                File sourceFile = this._getResourceFile("templates/mysql4-install-0.0.1.php");
+                File destDir = new File(this.moduleDir + "/" + subDir);
+                try {
+                    FileUtils.copyFileToDirectory(sourceFile, destDir);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             this.configElement.appendChild(this.globalElement);
@@ -157,6 +175,33 @@ public class CreateModuleProcess {
         } catch (ParserConfigurationException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    /**
+     * Create config file Company_Module.xml in app/etc/modules
+     */
+    protected void _createConfigFile() {
+        try {
+            File moduleFileTemplate = this._getResourceFile("templates/module.xml");
+            String fileContent = FileUtils.readFileToString(moduleFileTemplate, "UTF-8");
+            fileContent = String.format(fileContent, this.moduleName, this.codePool, this.moduleName);
+            String fileConfigPath = String.format(this.MODULE_CONFIG_PATH, this.projectDir, this.company, this.module);
+            File fileConfig = new File (fileConfigPath);
+            FileOutputStream fos = new FileOutputStream(fileConfig);
+            if (!fileConfig.exists()) {
+                fileConfig.createNewFile();
+            }
+            fos.write(fileContent.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected File _getResourceFile(String resourceFilePath) {
+        File tmp = new File(this.classLoader.getResource(resourceFilePath).getFile());
+        return tmp;
     }
 
     protected void _writeConfigFile() {

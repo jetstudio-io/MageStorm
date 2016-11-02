@@ -11,4 +11,9 @@ public class Utils {
         cap += inputString.toLowerCase().substring(1);
         return cap;
     }
+
+    public static String getResourceFile (String fileName) {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        return classLoader.getResource(fileName).getFile();
+    }
 }
