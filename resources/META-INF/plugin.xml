@@ -1,0 +1,45 @@
+<idea-plugin version="2">
+    <id>com.peopleincrowd.magestorm</id>
+    <name>Magento plugin for PhpStorm</name>
+    <version>1.0</version>
+    <vendor email="magestorm@peopleincrowd.com" url="http://www.peopleincrowd.com">People in Crowd</vendor>
+
+    <description><![CDATA[
+      The plugin of PhpStorm which support for Magento 1.x
+    ]]></description>
+
+    <!--
+    <change-notes><![CDATA[
+        Add change notes here.<br>
+        <em>most HTML tags may be used</em>
+      ]]>
+    </change-notes>
+    -->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="141.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <group id="com.peopleincrowd.magestorm.MainMenu" text="Mage Storm" description="Magento plugin for PhpStorm">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+        </group>
+        <action class="com.peopleincrowd.magestorm.actions.CreateModule" id="createModuleContext">
+            <add-to-group group-id="ProjectViewPopupMenuRefactoringGroup" anchor="first"/>
+        </action>
+        <action id="createModuleMenu" class="com.peopleincrowd.magestorm.actions.CreateModule" text="Create module"
+                description="Create magento module">
+            <add-to-group group-id="com.peopleincrowd.magestorm.MainMenu" anchor="first"/>
+        </action>
+    </actions>
+
+</idea-plugin>
