@@ -117,14 +117,14 @@ public class CreateModuleProcess {
 
         // Create config folder
         this._createFolders("etc");
-        this._createConfigFile();
+        this._createModuleXmlFile();
 
-        this._createConfig();
-        this._writeConfigFile();
+        this._createConfigXml();
+        this._writeConfigXmlFile();
     }
 
 
-    protected void _createConfig() {
+    protected void _createConfigXml() {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             this.dom = documentBuilder.newDocument();
@@ -167,7 +167,7 @@ public class CreateModuleProcess {
     /**
      * Create config file Company_Module.xml in app/etc/modules
      */
-    protected void _createConfigFile() {
+    protected void _createModuleXmlFile() {
         try {
             File moduleFileTemplate = this._getResourceFile("templates/module.xml");
             String fileContent = FileUtils.readFileToString(moduleFileTemplate, "UTF-8");
@@ -210,7 +210,7 @@ public class CreateModuleProcess {
         return tmp;
     }
 
-    protected void _writeConfigFile() {
+    protected void _writeConfigXmlFile() {
         try {
             String configFile = this.moduleDir + "/" + this.CONFIG_PATH;
             Transformer tr = TransformerFactory.newInstance().newTransformer();
