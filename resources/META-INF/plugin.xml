@@ -33,12 +33,16 @@
         <group id="com.peopleincrowd.magestorm.MainMenu" text="Mage Storm" description="Magento plugin for PhpStorm">
             <add-to-group group-id="MainMenu" anchor="last"/>
         </group>
-        <action class="com.peopleincrowd.magestorm.actions.CreateModule" id="createModuleContext">
-            <add-to-group group-id="ProjectViewPopupMenuRefactoringGroup" anchor="first"/>
+        <action class="com.peopleincrowd.magestorm.actions.CreateModule" id="createModuleContext" text="Create module">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
         </action>
         <action id="createModuleMenu" class="com.peopleincrowd.magestorm.actions.CreateModule" text="Create module"
                 description="Create magento module">
             <add-to-group group-id="com.peopleincrowd.magestorm.MainMenu" anchor="first"/>
+        </action>
+        <action id="com.peopleincrow.magestorm.createmodel" class="com.peopleincrowd.magestorm.actions.CreateModel"
+                text="Create model" description="create a model">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
         </action>
     </actions>
 

@@ -112,7 +112,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value=""/>
+              <text value="Company"/>
               <toolTipText value="Company name"/>
             </properties>
           </component>
@@ -145,6 +145,7 @@
               </grid>
             </constraints>
             <properties>
+              <text value="Module"/>
               <toolTipText value="Module name"/>
             </properties>
           </component>
